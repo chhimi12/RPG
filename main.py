@@ -6,7 +6,28 @@ from character import Knight, Mage
 
 class Game:
 
+    def criticial(self, attacker, defender, damage):
+            """Handles critical hits and dodging, modifying damage if applicable.
 
+            Args:
+                attacker (Character): The character performing the attack.
+                defender (Character): The character being attacked.
+                damage (int): The base damage amount.
+
+            Returns:
+                bool: True if the attack hit, False if it was dodged.
+            """
+
+            if random.random() < defender.dodge_rate:
+                print(f"{defender.user_name} dodged the attack!")
+                return False  # Attack missed
+
+            if random.random() < attacker.critical_hit_rate:
+                damage *= 2
+                print(f"{attacker.user_name} landed a critical hit!")
+
+            print(f"{attacker.user_name} dealt {damage} damage to {defender.user_name}!")
+            return True  # Attack hit
 
 
     def start(self, player_1, player_2):
@@ -14,8 +35,9 @@ class Game:
         while True:  # both players are alive
             print(f"{player_1.user_name}'s turn")
             print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
-            Attack = self.use_skill(player_1)
-            player_2.health -= Attack
+            Attack = self.use_skill(player_1) # player 1 attack player 2
+            if self.criticial(player_1, player_2, Attack):
+                player_2.health -= Attack
             if player_2.health <= 0:
                 print(f"{player_2.user_name} has been slain!")
                 return 0
@@ -24,8 +46,10 @@ class Game:
             print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
             print(f"{player_2.user_name}'s turn")
             print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
-            Attack = self.use_skill(player_2)  # player two uses their skill
-            player_1.health -= Attack
+            Attack = self.use_skill(player_2)  #  player 2 attacks player 1
+            if self.criticial(player_1, player_2, Attack):
+                player_2.health -= Attack
+
             if player_1.health <= 0:
                 print(f"{player_1.user_name} has been slain!")
                 return 0
@@ -41,8 +65,10 @@ class Game:
                 if player_2.cooldowns[skill] > 0:
                     player_2.cooldowns[skill] -= 1
 
+
     def choose_character(self):
         while True:
+          try:
             print(" - - - - - - - - - - - - - -- - - - - - -- - - - - - -- - - - - - - \n")
 
             character_types = ["Knight", "Mage", "Murim_Martial_Artist"]
@@ -70,11 +96,13 @@ class Game:
                 print(
                     "The Murim Artist wields chi with precision, sculpting combat into a seamless display of mastery.")
                 return character.Murim_Martial_Artist()  # create a knight object here
+          except ValueError:
+              print("Invalid input. Please enter a number.")
 
 
     def use_skill(self, user_character):
         while True:
-
+          try:
             choice = int(input("Enter 1 for Basic attack and 2 to view skills : "))
 
             if choice == 1:
@@ -96,17 +124,15 @@ class Game:
                 if user_character.cooldowns[skill_name] > 0:  # new line, at first its initalized to 0
                     print(f"{skill_name} is still on cooldown for {user_character.cooldowns[skill_name]} turns.")
                 else:
-                    is_crit = random.choices([True, False], weights=[user_character.critical_hit_rate, 1 - user_character.critical_hit_rate])[0]
-
-                    if is_crit:
-                        damage = available_skills[skill_name]['damage'] * 2  # Double the damage for a crit
-                        print(f"Critical Hit! You used {skill_name} and caused {damage} damage")
-                    else:
                         damage = available_skills[skill_name]['damage']
-                        print(f"You used {skill_name} and caused {damage} damage")
                         user_character.cooldowns[skill_name] = user_character.skills[skill_name][
                             'cooldown']  # this is where we put the value of cooldown
                         return available_skills[skill_name]['damage']
+          except ValueError:
+              print("Invalid input. Try again")
+
+
+
 
 
 

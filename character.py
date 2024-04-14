@@ -39,7 +39,8 @@ class Mage(Character):
             "Glimpse of Realization: Emptiness": {"damage": 7, "cooldown": 4, "level_required": 1}
         }
         super().__init__(health=10, stamina=10, attack=3, defense=12, skills=skills, mana=20, level=1,
-                         Character_type="Mage", user_name=user_name,dodge_rate=0.05,critical_hit_rate=0.10)
+                         Character_type="Mage", user_name=user_name,dodge_rate=0.90
+                         ,critical_hit_rate=0.10)
 
 
 class Murim_Martial_Artist(Character):
@@ -47,14 +48,14 @@ class Murim_Martial_Artist(Character):
         user_name = input("Enter your name here :")
         skills = {
             "Tiger Claw Strike": {"damage": 6, "cooldown": 2, "level_required": 1},
-            "Flowing River Dance ": {"damage": 2, "cooldown": 3, "level_required": 2},
+            "Flowing River Dance ": {"damage": 2, "cooldown": 3, "level_required": 1},
             # increase dodge-chance for next attack and counter it , reflect attack by *2
             "Fist of the wind": {"damage": 5.5, "cooldown": 3, "level_required": 1},
             "Dragon's Descent: ": {"damage": 7, "cooldown": 4, "level_required": 1}
         }
 
         super().__init__(health=50, stamina=10, attack=3, defense=12, skills=skills, mana=20, level=1,
-                         Character_type="Mage", user_name=user_name,dodge_rate=0.16,critical_hit_rate=0.50)
+                         Character_type="Mage", user_name=user_name,dodge_rate=0.50,critical_hit_rate=0.50)
 # Need to finsh implementing:
 
 # Implement AI states - players vs AI
