@@ -1,8 +1,13 @@
+import random
+
 import character
 from character import Knight, Mage
 
 
 class Game:
+
+
+
 
     def start(self, player_1, player_2):
 
@@ -91,10 +96,18 @@ class Game:
                 if user_character.cooldowns[skill_name] > 0:  # new line, at first its initalized to 0
                     print(f"{skill_name} is still on cooldown for {user_character.cooldowns[skill_name]} turns.")
                 else:
-                    print(f"You used {skill_name} and caused {available_skills[skill_name]['damage']} damage")
-                    user_character.cooldowns[skill_name] = user_character.skills[skill_name][
-                        'cooldown']  # this is where we put the value of cooldown
-                    return available_skills[skill_name]['damage']
+                    is_crit = random.choices([True, False], weights=[user_character.critical_hit_rate, 1 - user_character.critical_hit_rate])[0]
+
+                    if is_crit:
+                        damage = available_skills[skill_name]['damage'] * 2  # Double the damage for a crit
+                        print(f"Critical Hit! You used {skill_name} and caused {damage} damage")
+                    else:
+                        damage = available_skills[skill_name]['damage']
+                        print(f"You used {skill_name} and caused {damage} damage")
+                        user_character.cooldowns[skill_name] = user_character.skills[skill_name][
+                            'cooldown']  # this is where we put the value of cooldown
+                        return available_skills[skill_name]['damage']
+
 
 
 game = Game()
