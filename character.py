@@ -1,6 +1,7 @@
 class Character:
-    def __init__(self, health, stamina, attack, defense, skills, mana, level, Character_type, user_name, critical_hit_rate,
-                 dodge_rate,initialized_from_ai):
+    def __init__(self, health, stamina, attack, defense, skills, mana, level, Character_type, user_name,
+                 critical_hit_rate,
+                 dodge_rate):
         self.health = health
         self.stamina = stamina
         self.attack = attack
@@ -12,30 +13,24 @@ class Character:
         self.dodge_rate = dodge_rate
         self.Character_type = Character_type
         self.user_name = user_name
-        self.initialized_from_ai = initialized_from_ai # boolean flag
         self.cooldowns = {skill: 0 for skill in skills.keys()}  # create a dict with skill names and remaining cooldown
-        # for each skill , number of turns before user can a skill , intitalized to 0.
-
-    def set_default_name(self):
-            if isinstance(self, Knight):
-                self.user_name = "AI Knight"
-            elif isinstance(self, Mage):
-                self.user_name = "AI Mage"
-            elif isinstance(self, Murim_Martial_Artist):
-                self.user_name = "AI Murim Master"
 
 
 class Knight(Character):
-    def __init__(self):
-        user_name = input("Enter your name here :")
+    def __init__(self,is_ai=False):
+
+        if is_ai == False:
+            user_name = input("Enter your name here :")
+        else:
+            user_name = "Arthur"
         skills = {
             "Heavy strike": {"damage": 4, "level_required": 1, "cooldown": 2},
             "Sword thrust": {"damage": 3, "level_required": 1, "cooldown": 3},
             "Blade of Valor": {"damage": 6, "level_required": 1, "cooldown": 3},
             "Heavenly Judgement": {"damage": 8, "level_required": 1, "cooldown": 4}}
 
-        super().__init__(health=15, stamina=15, attack=2, defense=16, skills=skills, mana=0, level=1,
-                         Character_type="Knight", user_name=user_name,dodge_rate=0.12,critical_hit_rate=0.03,initialized_from_ai=True)
+        super().__init__(health=15, stamina=15, attack=4, defense=16, skills=skills, mana=0, level=1,
+                         Character_type="Knight", user_name=user_name, dodge_rate=0.12, critical_hit_rate=0.03)
 
 
 class Mage(Character):
@@ -47,9 +42,9 @@ class Mage(Character):
             "Cry of Thunder": {"damage": 5.5, "cooldown": 3, "level_required": 1},
             "Glimpse of Realization: Emptiness": {"damage": 7, "cooldown": 4, "level_required": 1}
         }
-        super().__init__(health=10, stamina=10, attack=3, defense=12, skills=skills, mana=20, level=1,
-                         Character_type="Mage", user_name=user_name,dodge_rate=0.90
-                         ,critical_hit_rate=0.10,initialized_from_ai=True)
+        super().__init__(health=10, stamina=10, attack=2, defense=12, skills=skills, mana=20, level=1,
+                         Character_type="Mage", user_name=user_name, dodge_rate=0.18
+                         , critical_hit_rate=0.10)
 
 
 class Murim_Martial_Artist(Character):
@@ -63,8 +58,8 @@ class Murim_Martial_Artist(Character):
             "Dragon's Descent": {"damage": 7, "cooldown": 4, "level_required": 1}
         }
 
-        super().__init__(health=50, stamina=10, attack=3, defense=12, skills=skills, mana=20, level=1,
-                         Character_type="Mage", user_name=user_name,dodge_rate=0.50,critical_hit_rate=0.50,initialized_from_ai=True)
+        super().__init__(health=16, stamina=10, attack=4, defense=12, skills=skills, mana=20, level=1,
+                         Character_type="Mage", user_name=user_name, dodge_rate=0.15, critical_hit_rate=0.08)
 
 # Need to finsh implementing:
 # Implement AI states - players vs AI
