@@ -6,8 +6,8 @@ class AI_Agent:
     @classmethod
     def choose_character(cls):
         character_types = ["Knight", "Mage", "Murim_Martial_Artist"]
-        # chosen_character = random.choice(character_types
-        chosen_character = "Knight"
+        chosen_character = random.choice(character_types)
+        # chosen_character = "Knight"
 
         if chosen_character == "Knight":
             character = Knight(is_ai=True)
@@ -15,12 +15,12 @@ class AI_Agent:
             print(
                 'With valor as their blade and honor as their shield, the knight embarks on a noble quest, carving their legend across the realms')
         elif chosen_character == "Mage":
-            character = Mage()
+            character = Mage(is_ai=True)
             print('AI has chosen the mystical Mage!')
             print(
                 "Casting spells with a flick of their wrist, the mage weaves intricate arcane energies to shape the very fabric of reality")
         elif chosen_character == "Murim_Martial_Artist":
-            character = Murim_Martial_Artist()
+            character = Murim_Martial_Artist(is_ai=True)
             print('AI has chosen the disciplined Murim Martial Artist!')
             print("The Murim Artist wields chi with precision, sculpting combat into a seamless display of mastery.")
 
@@ -29,6 +29,7 @@ class AI_Agent:
     @classmethod
     def use_skill(cls, user_character):
 
+        print("Easy AI playing now ")
         available_skills = {move: info for move, info in user_character.skills.items() if
                             info["level_required"] <= user_character.level and user_character.cooldowns[move] == 0}
         # move and ifno are initalized as dict pairs, then we iterate over key,value pair in character skills. both move and info will store each skills and its info

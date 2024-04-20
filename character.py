@@ -34,8 +34,11 @@ class Knight(Character):
 
 
 class Mage(Character):
-    def __init__(self):
-        user_name = input("Enter your name here :")
+    def __init__(self,is_ai=False):
+        if is_ai == False:
+            user_name = input("Enter your name here :")
+        else:
+            user_name = "Arc"
         skills = {
             "Fireball": {"damage": 5, "cooldown": 2, "level_required": 1},
             "Ice Shard": {"damage": 4, "cooldown": 3, "level_required": 1},
@@ -48,8 +51,12 @@ class Mage(Character):
 
 
 class Murim_Martial_Artist(Character):
-    def __init__(self):
-        user_name = input("Enter your name here :")
+    def __init__(self,is_ai=False):
+        if is_ai == False:
+            user_name = input("Enter your name here :")
+        else:
+            user_name = "Drogyom"
+
         skills = {
             "Tiger Claw Strike": {"damage": 6, "cooldown": 2, "level_required": 1},
             "Flowing River Dance": {"damage": 2, "cooldown": 3, "level_required": 1},

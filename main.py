@@ -4,6 +4,7 @@ import character
 from character import Knight, Mage
 import easy_ai
 from easy_ai import AI_Agent
+from medium_ai import Medium_AI_Agent
 
 
 class Game:
@@ -167,9 +168,47 @@ class Game:
             except ValueError:
                 print("Invalid input. Try again")
 
+    def start_Ai_against_AI(self, med_ai, ai):
+        while True:  # both players are alive
+            print(f"{med_ai.user_name}'s turn")
+            print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
+            Attack = Medium_AI_Agent.use_skill(med_ai)  # player 1 uses skill
+            if self.criticial(med_ai, ai, Attack):  # check if the attack will result in a critical hit
+                ai.health -= Attack
+            if ai.health <= 0:
+                print(f"{ai.user_name} has been slain!")
+                return 0
+
+            print(f"{ai.user_name}'s Health:{ai.health}")
+            print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
+            print(f"{ai.user_name}'s turn")
+            print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
+            Attack = AI_Agent.use_skill(ai)  # ai uses skill
+            if self.criticial(ai, med_ai, Attack):
+                med_ai.health -= Attack
+
+            if med_ai.health <= 0:
+                print(f"{med_ai.user_name} has been slain!")
+                return 0
+
+            print(f"{med_ai.user_name}'s Health:{med_ai.health}")
+            print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
+
+            # Decrement cooldowns
+            for skill in med_ai.cooldowns.keys():
+                if med_ai.cooldowns[skill] > 0:
+                    med_ai.cooldowns[skill] -= 1
+            for skill in ai.cooldowns.keys():
+                if ai.cooldowns[skill] > 0:
+                    ai.cooldowns[skill] -= 1
+
+
 
 game = Game()
-player_1 = game.choose_character()
+# player_1 = game.choose_character()
+MED_AI = AI_Agent.choose_character()
 # player_2 = game.choose_character() # human player
-AI_player = AI_Agent.choose_character()
-game.start_against_AI(player_1, AI_player)
+# AI_player = AI_Agent.choose_character()
+EASY_AI = Medium_AI_Agent.choose_character()
+# game.start_against_AI(player_1, AI_player)
+game.start_Ai_against_AI(MED_AI, EASY_AI)
