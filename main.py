@@ -9,36 +9,29 @@ from medium_ai import Medium_AI_Agent
 
 class Game:
 
-    def criticial(self, attacker, defender, damage):
-        """Handles critical hits and dodging, modifying damage if applicable.
-
-            Args:
-                attacker (Character): The character performing the attack.
-                defender (Character): The character being attacked.
-                damage (int): The base damage amount.
-
-            Returns:
-                bool: True if the attack hit, False if it was dodged.
-            """
-
-        if random.random() < defender.dodge_rate:
-            print(f"{defender.user_name} dodged the attack!")
-            return False  # Attack missed
-
+    def criticial(self, attacker, attack): # modifies attack if critical hit rate is achieved
         if random.random() < attacker.critical_hit_rate:
-            damage *= 2
+            attack = 1.5 * attack
             print(f"{attacker.user_name} landed a critical hit!")
-
-        print(f"{attacker.user_name} dealt {damage} damage to {defender.user_name}!")
-        return True  # Attack hit
+        return attack  # Attack hit
 
     def start_against_AI(self, player_1, ai):
         while True:  # both players are alive
             print(f"{player_1.user_name}'s turn")
             print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
             Attack = self.use_skill(player_1)  # player 1 uses skill
-            if self.criticial(player_1, ai, Attack):  # check if the attack will result in a critical hit
-                ai.health -= Attack
+            # if atk is NOT dodged
+            if random.random() > ai.dodge_rate:
+                Attack = self.criticial(player_1, Attack)  # if true increase damage
+                damage_absorption = 0.05 * ai.defense
+                if damage_absorption < Attack:  # if atttack is greater, so we don't have a negtaive attack value
+                    Attack = Attack - damage_absorption # normal case
+                else:
+                    Attack = 0  # complete absorpotion
+                ai.health -= Attack  # reduce health
+            else:
+                    print(f"{ai.user_name} dodged the attack!")
+
             if ai.health <= 0:
                 print(f"{ai.user_name} has been slain!")
                 return 0
@@ -48,8 +41,20 @@ class Game:
             print(f"{ai.user_name}'s turn")
             print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
             Attack = AI_Agent.use_skill(ai)  # ai uses skill
-            if self.criticial(ai, player_1, Attack):
-                player_1.health -= Attack
+                if self.criticial(ai):  # if true increase damage
+                    Attack = 1.5 * Attack
+                damage_absorption = 0.05 * player_1.defense  # TAKE defense into account
+                if damage_absorption < Attack:  # if atttack is greater, so we don't have a negtaive attack value
+                    Attack = Attack - damage_absorption
+                else:
+                    Attack = 0  # complete absorpotion
+                    # beffore we deduct health we check if attack is dodged
+                    # implement dodge attribute
+                    # chance of 0.0 to 1 being greater than dodge rate is very high
+                    print(f"{ai.user_name} dealt {Attack} damage to {player_1.user_name}!")
+                    player_1.health -= Attack  # reduce health
+            else:
+                print(f"{player_1.user_name} dodged the attack!")
 
             if player_1.health <= 0:
                 print(f"{player_1.user_name} has been slain!")
@@ -201,7 +206,6 @@ class Game:
             for skill in ai.cooldowns.keys():
                 if ai.cooldowns[skill] > 0:
                     ai.cooldowns[skill] -= 1
-
 
 
 game = Game()
