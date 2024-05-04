@@ -6,8 +6,8 @@ class AI_Agent:
     @classmethod
     def choose_character(cls):
         character_types = ["Knight", "Mage", "Murim_Martial_Artist"]
-        chosen_character = random.choice(character_types)
-        # chosen_character = "Knight"
+        # chosen_character = random.choice(character_types)
+        chosen_character = "Knight"
 
         if chosen_character == "Knight":
             character = Knight(is_ai=True)

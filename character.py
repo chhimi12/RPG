@@ -66,7 +66,7 @@ class Murim_Martial_Artist(Character):
         }
 
         super().__init__(health=16, stamina=10, attack=4, defense=12, skills=skills, mana=20, level=1,
-                         Character_type="Mage", user_name=user_name, dodge_rate=0.15, critical_hit_rate=0.08)
+                         Character_type="Mage", user_name=user_name, dodge_rate=0.99, critical_hit_rate=0.5)
 
 # Need to finsh implementing:
 # Implement AI states - players vs AI

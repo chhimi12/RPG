@@ -9,7 +9,7 @@ from medium_ai import Medium_AI_Agent
 
 class Game:
 
-    def criticial(self, attacker, attack): # modifies attack if critical hit rate is achieved
+    def criticial(self, attacker, attack):  # modifies attack if critical hit rate is achieved
         if random.random() < attacker.critical_hit_rate:
             attack = 1.5 * attack
             print(f"{attacker.user_name} landed a critical hit!")
@@ -25,12 +25,13 @@ class Game:
                 Attack = self.criticial(player_1, Attack)  # if true increase damage
                 damage_absorption = 0.05 * ai.defense
                 if damage_absorption < Attack:  # if atttack is greater, so we don't have a negtaive attack value
-                    Attack = Attack - damage_absorption # normal case
+                    Attack = Attack - damage_absorption  # normal case
                 else:
                     Attack = 0  # complete absorpotion
                 ai.health -= Attack  # reduce health
+                print(f"you caused {Attack} damage.")
             else:
-                    print(f"{ai.user_name} dodged the attack!")
+                print(f"{ai.user_name} dodged the attack!")
 
             if ai.health <= 0:
                 print(f"{ai.user_name} has been slain!")
@@ -41,18 +42,16 @@ class Game:
             print(f"{ai.user_name}'s turn")
             print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
             Attack = AI_Agent.use_skill(ai)  # ai uses skill
-                if self.criticial(ai):  # if true increase damage
-                    Attack = 1.5 * Attack
-                damage_absorption = 0.05 * player_1.defense  # TAKE defense into account
+            # if atk is NOT dodged
+            if random.random() > player_1.dodge_rate:
+                Attack = self.criticial(ai, Attack)  # if true increase damage
+                damage_absorption = 0.05 * player_1.defense
                 if damage_absorption < Attack:  # if atttack is greater, so we don't have a negtaive attack value
-                    Attack = Attack - damage_absorption
+                    Attack = Attack - damage_absorption  # normal case
                 else:
                     Attack = 0  # complete absorpotion
-                    # beffore we deduct health we check if attack is dodged
-                    # implement dodge attribute
-                    # chance of 0.0 to 1 being greater than dodge rate is very high
-                    print(f"{ai.user_name} dealt {Attack} damage to {player_1.user_name}!")
-                    player_1.health -= Attack  # reduce health
+                player_1.health -= Attack  # reduce health
+                print(f"{ai.user_name} caused {Attack} damage.")
             else:
                 print(f"{player_1.user_name} dodged the attack!")
 
@@ -72,7 +71,6 @@ class Game:
                     ai.cooldowns[skill] -= 1
 
     def start(self, player_1, player_2):
-
         while True:  # both players are alive
             print(f"{player_1.user_name}'s turn")
             print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
@@ -145,7 +143,7 @@ class Game:
                 choice = int(input("Enter 1 for Basic attack and 2 to view skills : "))
 
                 if choice == 1:
-                    print(f"You used a basic attack and caused {user_character.attack} damage")
+                    print(f"You used a basic attack ")
                     return user_character.attack
                 if choice == 2:
 
@@ -164,12 +162,11 @@ class Game:
                     if user_character.cooldowns[skill_name] > 0:  # new line, at first its initalized to 0
                         print(f"{skill_name} is still on cooldown for {user_character.cooldowns[skill_name]} turns.")
                     else:
-
                         damage = available_skills[skill_name]['damage']
-                        print(f"You used {skill_name} and caused {damage} damage")
+                        print(f"You used {skill_name}.")
                         user_character.cooldowns[skill_name] = user_character.skills[skill_name][
                             'cooldown']  # this is where we put the value of cooldown
-                        return available_skills[skill_name]['damage']
+                        return damage
             except ValueError:
                 print("Invalid input. Try again")
 
@@ -178,7 +175,7 @@ class Game:
             print(f"{med_ai.user_name}'s turn")
             print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
             Attack = Medium_AI_Agent.use_skill(med_ai)  # player 1 uses skill
-            if self.criticial(med_ai, ai, Attack):  # check if the attack will result in a critical hit
+            if self.criticial(ai, Attack):  # check if the attack will result in a critical hit
                 ai.health -= Attack
             if ai.health <= 0:
                 print(f"{ai.user_name} has been slain!")
@@ -209,10 +206,10 @@ class Game:
 
 
 game = Game()
-# player_1 = game.choose_character()
-MED_AI = AI_Agent.choose_character()
+player_1 = game.choose_character()
+MED_AI = Medium_AI_Agent.choose_character()
 # player_2 = game.choose_character() # human player
 # AI_player = AI_Agent.choose_character()
-EASY_AI = Medium_AI_Agent.choose_character()
-# game.start_against_AI(player_1, AI_player)
-game.start_Ai_against_AI(MED_AI, EASY_AI)
+# EASY_AI = Medium_AI_Agent.choose_character()
+game.start_against_AI(player_1, MED_AI)
+# game.start_Ai_against_AI(MED_AI,EASY_AI)
