@@ -1,7 +1,7 @@
 import random
 from character import Character, Knight, Mage, Murim_Martial_Artist
 from easy_ai import AI_Agent
-
+from easy_ai import AI_Agent
 
 class Medium_AI_Agent(AI_Agent):  # Inherit from AI_Agent
 

@@ -206,10 +206,10 @@ class Game:
 
 
 game = Game()
-player_1 = game.choose_character()
+# player_1 = game.choose_character()
 MED_AI = Medium_AI_Agent.choose_character()
 # player_2 = game.choose_character() # human player
 # AI_player = AI_Agent.choose_character()
-# EASY_AI = Medium_AI_Agent.choose_character()
-game.start_against_AI(player_1, MED_AI)
-# game.start_Ai_against_AI(MED_AI,EASY_AI)
+EASY_AI = AI_Agent.choose_character()
+# game.start_against_AI(player_1, MED_AI)
+game.start_Ai_against_AI(MED_AI,EASY_AI)
