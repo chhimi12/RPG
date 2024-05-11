@@ -25,11 +25,13 @@ class Game:
                 Attack = self.criticial(player_1, Attack)  # if true increase damage
                 damage_absorption = 0.05 * ai.defense
                 if damage_absorption < Attack:  # if atttack is greater, so we don't have a negtaive attack value
-                    Attack = Attack - damage_absorption  # normal case
+                    Attack = Attack - round(damage_absorption, 2)
                 else:
                     Attack = 0  # complete absorpotion
-                ai.health -= Attack  # reduce health
                 print(f"you caused {Attack} damage.")
+                print(f"Health({ai.health}) - Damage({Attack})")
+                ai.health -= Attack  # reduce health
+
             else:
                 print(f"{ai.user_name} dodged the attack!")
 
@@ -41,17 +43,19 @@ class Game:
             print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
             print(f"{ai.user_name}'s turn")
             print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
-            Attack = AI_Agent.use_skill(ai)  # ai uses skill
+            Attack = Medium_AI_Agent.use_skill(ai)  # medium ai uses skill
             # if atk is NOT dodged
             if random.random() > player_1.dodge_rate:
                 Attack = self.criticial(ai, Attack)  # if true increase damage
                 damage_absorption = 0.05 * player_1.defense
                 if damage_absorption < Attack:  # if atttack is greater, so we don't have a negtaive attack value
-                    Attack = Attack - damage_absorption  # normal case
+                    Attack = Attack - round(damage_absorption, 2)
                 else:
                     Attack = 0  # complete absorpotion
-                player_1.health -= Attack  # reduce health
                 print(f"{ai.user_name} caused {Attack} damage.")
+                print(f"Health({ai.health}) - Damage({Attack})")
+                player_1.health -= Attack  # reduce health
+
             else:
                 print(f"{player_1.user_name} dodged the attack!")
 
@@ -75,19 +79,48 @@ class Game:
             print(f"{player_1.user_name}'s turn")
             print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
             Attack = self.use_skill(player_1)  # player 1 attack player 2
-            if self.criticial(player_1, player_2, Attack):
+            # Dodge Check
+            if random.random() > player_2.dodge_rate:
+                # Attack successful - Apply critical hit and damage absorption
+                Attack = self.criticial(player_1, Attack)  # Check for critical hit
+                damage_absorption = 0.05 * player_2.defense
+
+                if damage_absorption < Attack:
+                    Attack = Attack - round(damage_absorption,2)
+                else:
+                    Attack = 0
+                print(f"You caused {Attack} damage.")
+                print(f"Health({player_2.health}) - Damage({Attack})")
                 player_2.health -= Attack
+
+            else:
+                print(f"{player_2.user_name} dodged the attack!")
+
             if player_2.health <= 0:
                 print(f"{player_2.user_name} has been slain!")
                 return 0
 
             print(f"{player_2.user_name}'s Health:{player_2.health}")
             print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
+
             print(f"{player_2.user_name}'s turn")
             print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
-            Attack = self.use_skill(player_2)  # player 2 attacks player 1
-            if self.criticial(player_1, player_2, Attack):
-                player_2.health -= Attack
+            Attack = self.use_skill(player_2)  # player 2 attack player 1
+            # Dodge Check
+            if random.random() > player_1.dodge_rate:
+                # Attack successful - Apply critical hit and damage absorption
+                Attack = self.criticial(player_2, Attack)  # Check for critical hit
+                damage_absorption = 0.05 * player_1.defense
+                if damage_absorption < Attack:
+                    Attack = Attack - round(damage_absorption, 2)
+                else:
+                    Attack = 0
+                print(f"You caused {Attack} damage.")
+                print(f"Health({player_1.health}) - Damage({Attack})")
+                player_1.health -= Attack
+
+            else:
+                print(f"{player_1.user_name} dodged the attack!")
 
             if player_1.health <= 0:
                 print(f"{player_1.user_name} has been slain!")
@@ -96,6 +129,7 @@ class Game:
             print(f"{player_1.user_name}'s Health:{player_1.health}")
             print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
 
+
             # Decrement cooldowns
             for skill in player_1.cooldowns.keys():
                 if player_1.cooldowns[skill] > 0:
@@ -103,6 +137,7 @@ class Game:
             for skill in player_2.cooldowns.keys():
                 if player_2.cooldowns[skill] > 0:
                     player_2.cooldowns[skill] -= 1
+
 
     def choose_character(self):
         while True:
@@ -159,7 +194,7 @@ class Game:
                     if choice == 0:
                         continue
                     skill_name = list(available_skills.keys())[choice - 1]
-                    if user_character.cooldowns[skill_name] > 0:  # new line, at first its initalized to 0
+                    if user_character.cooldowns[skill_name] > 0:  # at first its initialized to 0
                         print(f"{skill_name} is still on cooldown for {user_character.cooldowns[skill_name]} turns.")
                     else:
                         damage = available_skills[skill_name]['damage']
@@ -171,45 +206,75 @@ class Game:
                 print("Invalid input. Try again")
 
     def start_Ai_against_AI(self, med_ai, ai):
-        while True:  # both players are alive
-            print(f"{med_ai.user_name}'s turn")
-            print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
-            Attack = Medium_AI_Agent.use_skill(med_ai)  # player 1 uses skill
-            if self.criticial(ai, Attack):  # check if the attack will result in a critical hit
-                ai.health -= Attack
-            if ai.health <= 0:
-                print(f"{ai.user_name} has been slain!")
-                return 0
+            while True:  # both players are alive
+                print(f"{med_ai.user_name}'s turn")
+                print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
+                Attack = Medium_AI_Agent.use_skill(med_ai)
 
-            print(f"{ai.user_name}'s Health:{ai.health}")
-            print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
-            print(f"{ai.user_name}'s turn")
-            print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
-            Attack = AI_Agent.use_skill(ai)  # ai uses skill
-            if self.criticial(ai, med_ai, Attack):
-                med_ai.health -= Attack
+                # Dodge Check for AI
+                if random.random() > ai.dodge_rate:
+                    # Attack successful - Apply critical hit and damage absorption
+                    Attack = self.criticial(med_ai, Attack)  # Check for critical hit
+                    damage_absorption = 0.05 * ai.defense
+                    if damage_absorption < Attack:
+                        Attack = Attack - round(damage_absorption, 2)
+                    else:
+                        Attack = 0
+                    print(f"{med_ai.user_name} caused {Attack} damage.")
+                    print(f"Health({ai.health}) - Damage({Attack})")
+                    ai.health -= Attack
 
-            if med_ai.health <= 0:
-                print(f"{med_ai.user_name} has been slain!")
-                return 0
+                else:
+                    print(f"{ai.user_name} dodged the attack!")
 
-            print(f"{med_ai.user_name}'s Health:{med_ai.health}")
-            print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
+                if ai.health <= 0:
+                    print(f"{ai.user_name} has been slain!")
+                    return 0
 
-            # Decrement cooldowns
-            for skill in med_ai.cooldowns.keys():
-                if med_ai.cooldowns[skill] > 0:
-                    med_ai.cooldowns[skill] -= 1
-            for skill in ai.cooldowns.keys():
-                if ai.cooldowns[skill] > 0:
-                    ai.cooldowns[skill] -= 1
+                print(f"{ai.user_name}'s Health:{ai.health}")
+                print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
+
+                print(f"{ai.user_name}'s turn")
+                print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
+                Attack = AI_Agent.use_skill(ai)
+
+                # Dodge Check for Med AI
+                if random.random() > med_ai.dodge_rate:
+                    # Attack successful - Apply critical hit and damage absorption
+                    Attack = self.criticial(ai, Attack)  # Check for critical hit
+                    damage_absorption = 0.05 * med_ai.defense
+                    if damage_absorption < Attack:
+                        Attack = Attack - round(damage_absorption, 2)
+                    else:
+                        Attack = 0
+                    print(f"{ai.user_name} caused {Attack} damage.")
+                    print(f"Health({med_ai.health}) - Damage({Attack})")
+                    med_ai.health -= Attack
+
+                else:
+                    print(f"{med_ai.user_name} dodged the attack!")
+
+                if med_ai.health <= 0:
+                    print(f"{med_ai.user_name} has been slain!")
+                    return 0
+
+                print(f"{med_ai.user_name}'s Health:{med_ai.health}")
+                print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
+
+                # Decrement cooldowns for med_ai
+                for skill in med_ai.cooldowns.keys():
+                    if med_ai.cooldowns[skill] > 0:
+                        med_ai.cooldowns[skill] -= 1
+                for skill in ai.cooldowns.keys():
+                    if ai.cooldowns[skill] > 0:
+                        ai.cooldowns[skill] -= 1
 
 
 game = Game()
-# player_1 = game.choose_character()
 MED_AI = Medium_AI_Agent.choose_character()
+EASY_AI = AI_Agent.choose_character()
+game.start_Ai_against_AI(MED_AI,EASY_AI)
 # player_2 = game.choose_character() # human player
 # AI_player = AI_Agent.choose_character()
-EASY_AI = AI_Agent.choose_character()
 # game.start_against_AI(player_1, MED_AI)
-game.start_Ai_against_AI(MED_AI,EASY_AI)
+

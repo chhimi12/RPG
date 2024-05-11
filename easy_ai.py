@@ -28,7 +28,6 @@ class AI_Agent:
 
     @classmethod
     def use_skill(cls, user_character):
-
         print("Easy AI playing now ")
         available_skills = {move: info for move, info in user_character.skills.items() if
                             info["level_required"] <= user_character.level and user_character.cooldowns[move] == 0}
