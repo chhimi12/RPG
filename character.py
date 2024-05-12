@@ -13,10 +13,12 @@ class Character:
         self.Character_type = Character_type
         self.user_name = user_name
         self.cooldowns = {skill: 0 for skill in skills.keys()}
+
+
 #          create a dictionary where the keys are obtained from skills.keys() and each value is given cooldown = 0
 
 class Knight(Character):
-    def __init__(self,is_ai=False):
+    def __init__(self, is_ai=False):
 
         if is_ai == False:
             user_name = input("Enter your name here :")
@@ -27,23 +29,30 @@ class Knight(Character):
             "Heavy strike": {"damage": 4, "level_required": 1, "cooldown": 2},
             "Sword thrust": {"damage": 3, "level_required": 1, "cooldown": 3},
             "Blade of Valor": {"damage": 6, "level_required": 1, "cooldown": 3},
-            "Heavenly Judgement": {"damage": 8, "level_required": 1, "cooldown": 4},
-            "Defense buff: Body Aura": {"damage": 0,"level_required": 1, "cooldown": 4,"total effected turns":3,"effected turns counter":0,"buff": False}}
+            "Heavenly Judgement": {"damage": 8, "level_required": 1, "cooldown": 4},}
+
         super().__init__(health=15, attack=4, defense=16, skills=skills, mana=0, level=1,
                          Character_type="Knight", user_name=user_name, dodge_rate=0.12, critical_hit_rate=0.03)
 
 
 class Mage(Character):
-    def __init__(self,is_ai=False):
+    def __init__(self, is_ai=False):
         if is_ai == False:
             user_name = input("Enter your name here :")
         else:
             user_name = "Arc"
         skills = {
-            "Fireball": {"damage": 5, "cooldown": 2, "level_required": 1},
-            "Ice Shard": {"damage": 4, "cooldown": 3, "level_required": 1},
-            "Cry of Thunder": {"damage": 5.5, "cooldown": 3, "level_required": 1},
-            "Glimpse of Realization: Emptiness": {"damage": 7, "cooldown": 4, "level_required": 1}
+
+            "Buff_skills":{
+                "Basic Heal": {"Cooldown": 5,"Buff Type":"Health Buff","Duration":1,"Amount":1.5,"Counter":0}
+            },
+
+            "attack_skills": {
+                "Fireball": {"damage": 5, "cooldown": 2, "level_required": 1},
+                "Ice Shard": {"damage": 4, "cooldown": 3, "level_required": 1},
+                "Cry of Thunder": {"damage": 5.5, "cooldown": 3, "level_required": 1},
+                "Glimpse of Realization: Emptiness": {"damage": 7, "cooldown": 4, "level_required": 1}
+            }
         }
         super().__init__(health=10, attack=2, defense=12, skills=skills, mana=20, level=1,
                          Character_type="Mage", user_name=user_name, dodge_rate=0.18
@@ -51,7 +60,7 @@ class Mage(Character):
 
 
 class Murim_Martial_Artist(Character):
-    def __init__(self,is_ai=False):
+    def __init__(self, is_ai=False):
         if is_ai == False:
             user_name = input("Enter your name here :")
         else:
