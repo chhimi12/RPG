@@ -9,7 +9,7 @@ class Medium_AI_Agent():
     def choose_character(cls):
         character_types = ["Knight", "Mage", "Murim_Martial_Artist"]
         chosen_character = random.choice(character_types)
-        chosen_character = "Knight"
+        chosen_character = "Mage"
 
         if chosen_character == "Knight":
             character = Knight(is_ai=True)

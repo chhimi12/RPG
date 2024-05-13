@@ -12,10 +12,12 @@ class Character:
         self.dodge_rate = dodge_rate
         self.Character_type = Character_type
         self.user_name = user_name
-        self.cooldowns = {skill: 0 for skill in skills.keys()}
+        self.cooldowns = {}
+        for skill_type in skills.keys():
+            for skill in skills[skill_type].keys():
+                self.cooldowns[skill] = 0
+        self.active_buff = False
 
-
-#          create a dictionary where the keys are obtained from skills.keys() and each value is given cooldown = 0
 
 class Knight(Character):
     def __init__(self, is_ai=False):
@@ -44,7 +46,7 @@ class Mage(Character):
         skills = {
 
             "Buff_skills":{
-                "Basic Heal": {"Cooldown": 5,"Buff Type":"Health Buff","Duration":1,"Amount":1.5,"Counter":0}
+                "Basic Heal": {'damage':0,"cooldown": 5,"Buff Type":"Health Buff","Duration":1,"Amount":1.5,"Counter":0}
             },
 
             "attack_skills": {
