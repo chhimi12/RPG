@@ -8,26 +8,32 @@ from medium_ai import Medium_AI_Agent
 
 
 def apply_buff(user_character, type, duration, amount, counter):
+
     if type == "Health Buff":
-        user_character.health *= amount
-        print(f"Health increased by {amount * 100}%")
+        # Issue with health buff: its as a proportion of current health. Instead of max health.
+        # can have a new max health attribute in character, or pass down initial health into apply
+        previous_health = user_character.health
+        print("Current Health: " + str(previous_health))
+        Increase = user_character.max_health * amount # 0.5 * max health
+        user_character.health += Increase
+        print(f"Health increased by {round(Increase, 2)} points \n")
+        print(f"your health is now {user_character.health} ")
 
     elif type == "Attack Buff":
         user_character.attack *= amount
-        print(f"Attack increased by {amount * 100}%")
+        print(f"Attack increased by {round((amount - 1) * 100, 2)}%")
 
     elif type == "Defense Buff":
         user_character.defense *= amount
-        print(f"Defense increased by {amount * 100}%")
+        print(f"Defense increased by {round((amount - 1) * 100, 2)}%")
 
     elif type == "Critical Buff":
         user_character.critical_hit_rate *= amount
-        print(f"Critical hit rate increased by {amount * 100}%")
+        print(f"Critical hit rate increased by {round((amount - 1) * 100, 2)}%")
 
     elif type == "Dodge Buff":
         user_character.dodge_rate *= amount
-        print(f"Dodge rate increased by {amount * 100}%")
-
+        print(f"Dodge rate increased by {round((amount - 1) * 100, 2)}%")
     user_character.active_buff = True
 
 
@@ -67,7 +73,8 @@ class Game:
             print("- - - - - - - - - - - - - - - - - - - - - - - - - - - - - -")
             Attack = self.use_skill(player_1)  # player 1 uses skill
             # if atk is NOT dodged
-            if random.random() > ai.dodge_rate:
+
+            if random.random() > ai.dodge_rate: # if not dodged
                 Attack = self.criticial(player_1, Attack)  # if true increase damage
                 damage_absorption = 0.05 * ai.defense
                 if damage_absorption < Attack:  # if atttack is greater, so we don't have a negtaive attack value
@@ -75,10 +82,10 @@ class Game:
                 else:
                     Attack = 0  # complete absorpotion
                 print(f"you caused {Attack} damage.")
-                print(f"Health({ai.health}) - Damage({Attack})")
+                print(f"Health({round(ai.health,2)}) - Damage({round(Attack,2)})")
                 ai.health -= Attack  # reduce health
 
-            else:
+            elif Attack != 0 : # if its not a buff
                 print(f"{ai.user_name} dodged the attack!")
 
             if ai.health <= 0:
@@ -99,10 +106,10 @@ class Game:
                 else:
                     Attack = 0  # complete absorpotion
                 print(f"{ai.user_name} caused {Attack} damage.")
-                print(f"Health({ai.health}) - Damage({Attack})")
+                print(f"Health({round(ai.health,2)}) - Damage({round(Attack,2)})")
                 player_1.health -= Attack  # reduce health
 
-            else:
+            elif Attack != 0 :
                 print(f"{player_1.user_name} dodged the attack!")
 
             if player_1.health <= 0:
@@ -135,11 +142,12 @@ class Game:
                     Attack = Attack - round(damage_absorption, 2)
                 else:
                     Attack = 0
+
                 print(f"You caused {Attack} damage.")
-                print(f"Health({player_2.health}) - Damage({Attack})")
+                print(f"Health({round(player_2.health,2)}) - Damage({round(Attack)}")
                 player_2.health -= Attack
 
-            else:
+            elif Attack != 0 : # if its not a buff skill
                 print(f"{player_2.user_name} dodged the attack!")
 
             if player_2.health <= 0:
@@ -162,10 +170,10 @@ class Game:
                 else:
                     Attack = 0
                 print(f"You caused {Attack} damage.")
-                print(f"Health({player_1.health}) - Damage({Attack})")
+                print(f"Health({round(player_1.health, 2)}) - Damage({round(Attack)}")
                 player_1.health -= Attack
 
-            else:
+            elif Attack != 0:
                 print(f"{player_1.user_name} dodged the attack!")
 
             if player_1.health <= 0:
@@ -232,9 +240,8 @@ class Game:
                             print(f"\t{skill}:")
                             for attribute, value in details.items():
                                 print(f"\t\t{attribute}: {value}")
-                    choice = input("\n type q to go back: ")
-                    if choice == "q":
-                        continue  # skip this iteration of the loop, so go back to asking input
+                    choice = input("Type the name of the skill to use the skill or type 'hit' to use a basic attack"
+                                   "\n Type 'skill_info' to view your skills information: ")
                 # if skill exists
                 if any(choice in skills_category for skills_category in user_character.skills.values()):
                     # check if skill is in cool down
@@ -245,17 +252,19 @@ class Game:
                         print(f"You used {choice}.")
 
                         # check if there is an active buff
-                        if user_character.active_buff:
-                            if user_character.skills['Buff_skills'][choice]["Counter"] > user_character.skills['Buff_skills'][choice]["Duration"]:  # check if buff effect is over
-                                user_character.active_buff = False
-                                remove_buff(user_character, user_character.skills['Buff_skills'][choice]["Buff Type"],user_character.skills['Buff_skills'][choice]["Duration"],user_character.skills['Buff_skills'][choice]["Amount"],
-                                            user_character.skills['Buff_skills'][choice]["Counter"])  # reset all stats to normal
-                                user_character.skills['Buff_skills'][choice][
-                                    "Counter"] = 0  # set counter to 0 if buff effect is over
-                            else:  # if not over, incremet the counter
-                                user_character.skills['Buff_skills'][choice]["Counter"] += 1
-                                # if the user uses a buff skill
+                        if user_character.active_buff: # if there is an active buff, icnrement the counter for them each turn
+                                if user_character.skills['Buff_skills'][user_character.buff_in_effect]["Counter"] > user_character.skills['Buff_skills'][user_character.buff_in_effect]["Duration"]:  # check if buff effect is over
 
+                                    user_character.active_buff = False
+                                    remove_buff(user_character, user_character.skills['Buff_skills'][user_character.buff_in_effect]["Buff Type"],user_character.skills['Buff_skills'][user_character.buff_in_effect]["Duration"],user_character.skills['Buff_skills'][user_character.buff_in_effect]["Amount"],
+                                                user_character.skills['Buff_skills'][user_character.buff_in_effect]["Counter"])  # reset all stats to normal
+                                    user_character.skills['Buff_skills'][user_character.buff_in_effect][
+                                        "Counter"] = 0  # set counter to 0 if buff effect is over
+                                else:  # if not over, incremet the counter
+                                    user_character.skills['Buff_skills'][user_character.buff_in_effect]["Counter"] += 1
+                                    # if the user uses a buff skill
+
+                       # if chosen move is a buff skill
                         if choice in user_character.skills['Buff_skills']:
                             type = user_character.skills['Buff_skills'][choice]["Buff Type"]
                             duration = user_character.skills['Buff_skills'][choice]["Duration"]
@@ -267,6 +276,7 @@ class Game:
                                 apply_buff(user_character, type, duration, amount, counter)
                                 user_character.cooldowns[choice] = user_character.skills['Buff_skills'][choice][
                                     "cooldown"]
+                                user_character.buff_in_effect = choice
                                 return user_character.skills['Buff_skills'][choice]["damage"]
                             else:
                                 print("You already have an active buff.")
@@ -298,10 +308,10 @@ class Game:
                 else:
                     Attack = 0
                 print(f"{med_ai.user_name} caused {Attack} damage.")
-                print(f"Health({ai.health}) - Damage({Attack})")
+                print(f"Health({round(ai.health,2)}) - Damage({round(Attack,2)})")
                 ai.health -= Attack
 
-            else:
+            elif Attack != 0 :
                 print(f"{ai.user_name} dodged the attack!")
 
             if ai.health <= 0:
@@ -325,10 +335,10 @@ class Game:
                 else:
                     Attack = 0
                 print(f"{ai.user_name} caused {Attack} damage.")
-                print(f"Health({med_ai.health}) - Damage({Attack})")
+                print(f"Health({round(med_ai.health, 2)}) - Damage({round(Attack, 2)})")
                 med_ai.health -= Attack
 
-            else:
+            elif Attack != 0:
                 print(f"{med_ai.user_name} dodged the attack!")
 
             if med_ai.health <= 0:
@@ -349,6 +359,7 @@ class Game:
 
 game = Game()
 MED_AI = Medium_AI_Agent.choose_character()
+# MED_AI = AI_Agent.choose_character()
 EASY_AI = AI_Agent.choose_character()
 game.start_Ai_against_AI(MED_AI,EASY_AI)
 # player_2 = game.choose_character()  # human player

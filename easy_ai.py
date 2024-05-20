@@ -29,16 +29,14 @@ class AI_Agent:
     @classmethod
     def use_skill(cls, user_character):
         print("Easy AI playing now ")
-        available_skills = {move: info for move, info in user_character.skills.items() if
+        available_skills = {move: info for move, info in user_character.skills['attack_skills'].items() if
                             info["level_required"] <= user_character.level and user_character.cooldowns[move] == 0}
-        # move and ifno are initalized as dict pairs, then we iterate over key,value pair in character skills. both move and info will store each skills and its info
-        # move is the name of the skill which is passed into cooldowns to check remaining cool down for the move.
 
         if available_skills:
             skill_name = random.choice(list(available_skills.keys()))
             damage = available_skills[skill_name]['damage']
-            user_character.cooldowns[skill_name] = user_character.skills[skill_name]['cooldown']
-            print(f"{user_character.user_name} used {skill_name} and caused {damage} damage")
+            user_character.cooldowns[skill_name] = user_character.skills['attack_skills'][skill_name]['cooldown']
+            print(f"{user_character.user_name} used {skill_name}")
             return damage
         else:
             return user_character.attack

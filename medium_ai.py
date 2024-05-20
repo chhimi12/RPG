@@ -1,7 +1,6 @@
 import random
 from character import Character, Knight, Mage, Murim_Martial_Artist
 from easy_ai import AI_Agent
-from easy_ai import AI_Agent
 
 class Medium_AI_Agent():
 
@@ -32,7 +31,7 @@ class Medium_AI_Agent():
     @classmethod
     def use_skill(cls, user_character):
         print("Medium AI playing ")
-        available_skills = {move: info for move, info in user_character.skills.items() if
+        available_skills = {move: info for move, info in user_character.skills['attack_skills'].items() if
                             info["level_required"] <= user_character.level and user_character.cooldowns[move] == 0}
 
         if available_skills:
@@ -43,7 +42,7 @@ class Medium_AI_Agent():
             damage = skill_info['damage']
             user_character.cooldowns[skill_name] = skill_info['cooldown']
             # once a skill is used it will obtain a cool down value
-            print(f"{user_character.user_name} used {skill_name} and caused {damage} damage")
+            print(f"{user_character.user_name} used {skill_name}")
             return damage
         else:
             return user_character.attack  # Fallback to basic attack
